@@ -53,7 +53,7 @@ Return a JSON object with EXACTLY this structure:
       "field": "Computer Science",
       "startDate": "2018-08",
       "endDate": "2022-05",
-      "gpa": "3.8",
+      "grade": "3.8/4.0",
       "description": "Relevant coursework, honors, etc."
     }
   ],
@@ -66,16 +66,17 @@ Return a JSON object with EXACTLY this structure:
       "startDate": "2022-06",
       "endDate": "2024-01",
       "current": false,
-      "description": "• Bullet point achievements\\n• Another achievement"
+      "description": "• Bullet point achievements\n• Another achievement"
     }
   ],
   "projects": [
     {
       "id": "uuid-string",
       "name": "Project Name",
-      "technologies": "React, Node.js, PostgreSQL",
+      "technologies": ["React", "Node.js", "PostgreSQL"],
       "startDate": "2023-01",
       "endDate": "2023-06",
+      "ongoing": false,
       "description": "What the project does and your contributions",
       "link": "github.com/user/project"
     }
@@ -85,21 +86,24 @@ Return a JSON object with EXACTLY this structure:
       "id": "uuid-string",
       "category": "Programming Languages",
       "items": "Python, JavaScript, TypeScript, Go"
-    },
-    {
-      "id": "uuid-string",
-      "category": "Frameworks",
-      "items": "React, FastAPI, Django"
     }
   ],
-  "customSections": []
+  "customSections": [
+    {
+      "id": "uuid-string",
+      "title": "Certification",
+      "description": "AWS Certified Solutions Architect – Associate (SAA)\n• Active Date: Feb 8, 2026\n• Expiration Date: Feb 8, 2029"
+    }
+  ]
 }
 
 RULES:
 - Generate unique UUIDs for each id field
 - Use YYYY-MM format for dates
-- If a field is not found, use empty string ""
+- If a field is not found, use empty string "" (or empty array [] for technologies)
 - For current jobs, set "current": true and "endDate": ""
+- For ongoing projects, set "ongoing": true and "endDate": ""
+- technologies MUST be a JSON array of strings
 - Preserve bullet points in descriptions using \\n
 - Extract ALL work experience, education, and projects found
 - Group skills by logical categories"""

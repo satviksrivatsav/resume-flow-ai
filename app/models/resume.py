@@ -22,7 +22,7 @@ class Education(BaseModel):
     field: str = ""
     startDate: str = ""
     endDate: str = ""
-    gpa: Optional[str] = ""
+    grade: Optional[str] = ""
     description: str = ""
 
 
@@ -42,9 +42,10 @@ class Project(BaseModel):
     """Project entry in a resume."""
     id: str
     name: str = ""
-    technologies: str = ""
+    technologies: list[str] = []
     startDate: str = ""
     endDate: str = ""
+    ongoing: bool = False
     description: str = ""
     link: Optional[str] = ""
 
@@ -56,6 +57,13 @@ class Skill(BaseModel):
     items: str = ""
 
 
+class Custom(BaseModel):
+    """Any section in the parsed resume goes to custom section"""
+    id: str
+    title: str = ""
+    description: str = ""
+
+
 class ResumeData(BaseModel):
     """Complete resume data structure matching frontend types."""
     personalInfo: PersonalInfo
@@ -63,4 +71,4 @@ class ResumeData(BaseModel):
     workExperience: list[WorkExperience] = []
     projects: list[Project] = []
     skills: list[Skill] = []
-    customSections: list = []
+    customSections: list[Custom] = []
