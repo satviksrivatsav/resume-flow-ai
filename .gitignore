@@ -24,11 +24,13 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.python-version
 
 # Virtual environments
 venv/
 ENV/
 env/
+.venv/
 
 # IDE
 .idea/
@@ -44,3 +46,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Liniting
+.ruff_cache/

@@ -65,22 +65,18 @@ The extraction process follows a four-stage pipeline:
 ## 🔧 Local Setup
 
 ### 1. Installation
-Ensure you have Python 3.9+ installed.
+Ensure you have [uv](https://docs.astral.sh/uv/) installed.
 
 ```bash
 # Navigate to the service directory
-cd resume-flow-parser
+cd resume-flow-ai
 
-# Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies and create a virtual environment
+uv sync
 ```
 
 ### 2. Environment Configuration
-Create a `.env` file in the `resume-flow-parser` root:
+Create a `.env` file in the root directory:
 
 ```env
 HF_TOKEN=your_huggingface_token_here
@@ -88,6 +84,7 @@ HF_TOKEN=your_huggingface_token_here
 
 ### 3. Running the Service
 ```bash
-uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 ```
 The API will be available at `http://localhost:8000`. You can explore the interactive documentation at `http://localhost:8000/docs`.
+
