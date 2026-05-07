@@ -88,7 +88,7 @@ Return a JSON object with EXACTLY this structure:
       "items": "Python, JavaScript, TypeScript, Go"
     }
   ],
-  "customSections": [
+  "additionalSections": [
     {
       "id": "uuid-string",
       "title": "Certification",
@@ -106,7 +106,9 @@ RULES:
 - technologies MUST be a JSON array of strings
 - Preserve bullet points in descriptions using \\n
 - Extract ALL work experience, education, and projects found
-- Group skills by logical categories"""
+- Group skills by logical categories
+- AMBIGUITY RULE: If an entry is ambiguous (e.g. academic research, lab experiments, or thesis work that could be either a project or work experience), place it in `additionalSections` with an appropriate title like 'Research Experience' or 'Academic Projects'. This keeps `workExperience` strictly for professional employment and `projects` for major technical/side projects.
+- EXCLUSIVITY RULE: Each piece of information from the resume must appear in EXACTLY one section. Do NOT duplicate data across sections."""
 
     user_prompt = f"""Parse this resume and return structured JSON:
 
