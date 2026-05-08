@@ -1,12 +1,14 @@
+from typing import Literal
+
 from pydantic import BaseModel, field_validator
-from typing import Optional, Literal
+
 
 class Field(BaseModel):
     """"Data model of a Field request."""
     action: Literal['REWRITE', 'GENERATE']
     fieldName: str
-    originalText: Optional[str] = ""
-    instruction: Optional[str] = ""
+    originalText: str | None = ""
+    instruction: str | None = ""
     tone: Literal['professional', 'casual', 'confident', 'friendly'] = "professional"
     format: Literal['bullets', 'paragraph'] = "paragraph"
 

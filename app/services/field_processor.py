@@ -1,5 +1,7 @@
 import logging
+
 from huggingface_hub import InferenceClient
+
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)

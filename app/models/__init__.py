@@ -1,11 +1,11 @@
 # Models package
 from app.models.resume import (
-    PersonalInfo,
     Education,
-    WorkExperience,
+    PersonalInfo,
     Project,
-    Skill,
     ResumeData,
+    Skill,
+    WorkExperience,
 )
 
 __all__ = [

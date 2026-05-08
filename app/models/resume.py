@@ -1,5 +1,5 @@
+
 from pydantic import BaseModel
-from typing import Optional
 
 
 class PersonalInfo(BaseModel):
@@ -8,9 +8,9 @@ class PersonalInfo(BaseModel):
     email: str = ""
     phone: str = ""
     location: str = ""
-    linkedin: Optional[str] = ""
-    website: Optional[str] = ""
-    github: Optional[str] = ""
+    linkedin: str | None = ""
+    website: str | None = ""
+    github: str | None = ""
     summary: str = ""
 
 
@@ -22,7 +22,7 @@ class Education(BaseModel):
     field: str = ""
     startDate: str = ""
     endDate: str = ""
-    grade: Optional[str] = ""
+    grade: str | None = ""
     description: str = ""
 
 
@@ -47,7 +47,7 @@ class Project(BaseModel):
     endDate: str = ""
     ongoing: bool = False
     description: str = ""
-    link: Optional[str] = ""
+    link: str | None = ""
 
 
 class Skill(BaseModel):

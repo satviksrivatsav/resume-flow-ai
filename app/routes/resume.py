@@ -1,16 +1,19 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
-from app.services.resume_parser import parse_resume_pdf
-from app.services.field_processor import process_field_request
 import logging
-from app.models.field import Field, FieldResponse
 import time
+from typing import Annotated
+
+from fastapi import APIRouter, File, HTTPException, UploadFile
+
+from app.models.field import Field, FieldResponse
+from app.services.field_processor import process_field_request
+from app.services.resume_parser import parse_resume_pdf
 
 router = APIRouter(prefix="/resume", tags=["Resume"])
 logger = logging.getLogger(__name__)
 
 
 @router.post("/parse")
-async def parse_resume(file: UploadFile = File(...)):
+async def parse_resume(file: Annotated[UploadFile, File(...)]):
     """
     Parse a PDF resume and extract structured data.
     
@@ -37,10 +40,10 @@ async def parse_resume(file: UploadFile = File(...)):
         }
     except ValueError as e:
         logger.warning(f"Resume parsing failed: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:
         logger.exception("Failed to parse resume")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @router.post(path="/field")
@@ -82,6 +85,4 @@ async def field_action(request: Field):
         }
     except Exception as e:
         logger.exception("Failed to process field")
-        raise HTTPException(status_code=500, detail=str(e))
-        logger.exception("Failed to parse the field")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e

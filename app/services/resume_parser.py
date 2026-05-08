@@ -1,10 +1,11 @@
-import fitz  # PyMuPDF
 import json
-import re
-from huggingface_hub import InferenceClient
-from app.core.config import settings
-from typing import Any
 import logging
+from typing import Any
+
+import fitz  # PyMuPDF
+from huggingface_hub import InferenceClient
+
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 client = InferenceClient(api_key=settings.HF_TOKEN)
@@ -25,7 +26,7 @@ async def extract_text_from_pdf(pdf_bytes: bytes) -> str:
         return "\n\n".join(text_content)
     except Exception as e:
         logger.error(f"PDF extraction failed: {e}")
-        raise ValueError(f"Failed to extract text from PDF: {e}")
+        raise ValueError(f"Failed to extract text from PDF: {e}") from e
 
 
 async def structure_resume_with_llm(raw_text: str) -> dict[str, Any]:
@@ -133,7 +134,7 @@ Return only valid JSON, no markdown formatting."""
         
     except Exception as e:
         logger.error(f"LLM API call failed: {e}")
-        raise ValueError(f"LLM API call failed: {e}")
+        raise ValueError(f"LLM API call failed: {e}") from e
     
     try:
         if not raw_content:
@@ -171,7 +172,7 @@ Return only valid JSON, no markdown formatting."""
         return json.loads(json_str)
     except json.JSONDecodeError as e:
         logger.error(f"LLM returned invalid JSON: {e}")
-        raise ValueError("Failed to parse LLM response")
+        raise ValueError("Failed to parse LLM response") from e
 
 
 async def parse_resume_pdf(pdf_bytes: bytes) -> dict[str, Any]:
