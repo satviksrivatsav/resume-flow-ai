@@ -1,9 +1,9 @@
-
 from pydantic import BaseModel
 
 
 class PersonalInfo(BaseModel):
     """Personal information section of a resume."""
+
     name: str = ""
     email: str = ""
     phone: str = ""
@@ -16,6 +16,7 @@ class PersonalInfo(BaseModel):
 
 class Education(BaseModel):
     """Education entry in a resume."""
+
     id: str
     school: str = ""
     degree: str = ""
@@ -28,6 +29,7 @@ class Education(BaseModel):
 
 class WorkExperience(BaseModel):
     """Work experience entry in a resume."""
+
     id: str
     company: str = ""
     position: str = ""
@@ -40,6 +42,7 @@ class WorkExperience(BaseModel):
 
 class Project(BaseModel):
     """Project entry in a resume."""
+
     id: str
     name: str = ""
     technologies: list[str] = []
@@ -52,6 +55,7 @@ class Project(BaseModel):
 
 class Skill(BaseModel):
     """Skill category in a resume."""
+
     id: str
     category: str = ""
     items: str = ""
@@ -59,6 +63,7 @@ class Skill(BaseModel):
 
 class Custom(BaseModel):
     """Any section in the parsed resume goes to custom section"""
+
     id: str
     title: str = ""
     description: str = ""
@@ -66,6 +71,7 @@ class Custom(BaseModel):
 
 class ResumeData(BaseModel):
     """Complete resume data structure matching frontend types."""
+
     personalInfo: PersonalInfo
     education: list[Education] = []
     workExperience: list[WorkExperience] = []
