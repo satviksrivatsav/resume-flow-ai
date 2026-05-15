@@ -1,6 +1,15 @@
+import uuid
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
+
+
+def ensure_unique_id(v: Any) -> str:
+    """Ensure the ID is a valid, unique UUID and not a placeholder."""
+    PLACEHOLDER_ID = "4f4e4f4e-4f4e-4f4e-4f4e-4f4e4f4e4f4e"
+    if not v or v == "uuid" or v == PLACEHOLDER_ID:
+        return str(uuid.uuid4())
+    return str(v)
 
 
 def coerce_date_to_string(v: Any) -> str:
@@ -17,13 +26,21 @@ def coerce_date_to_string(v: Any) -> str:
     return str(v)
 
 
+class BaseItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def validate_id(cls, v: Any) -> str:
+        return ensure_unique_id(v)
+
+
 class Website(BaseModel):
     label: str = ""
     href: str = ""
 
 
-class CustomField(BaseModel):
-    id: str
+class CustomField(BaseItem):
     icon: str = ""
     text: str = ""
     link: str = ""
@@ -62,8 +79,7 @@ class SectionBase(BaseModel):
     separate: bool = False
 
 
-class EducationItem(BaseModel):
-    id: str
+class EducationItem(BaseItem):
     school: str = ""
     degree: str = ""
     area: str = ""
@@ -80,8 +96,7 @@ class EducationItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class ExperienceRole(BaseModel):
-    id: str
+class ExperienceRole(BaseItem):
     position: str = ""
     period: str = ""
     description: str = ""
@@ -92,8 +107,7 @@ class ExperienceRole(BaseModel):
         return coerce_date_to_string(v)
 
 
-class ExperienceItem(BaseModel):
-    id: str
+class ExperienceItem(BaseItem):
     company: str = ""
     position: str = ""
     location: str = ""
@@ -109,8 +123,7 @@ class ExperienceItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class ProjectItem(BaseModel):
-    id: str
+class ProjectItem(BaseItem):
     name: str = ""
     description: str = ""
     period: str = ""
@@ -124,8 +137,7 @@ class ProjectItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class SkillItem(BaseModel):
-    id: str
+class SkillItem(BaseItem):
     name: str = ""
     description: str = ""
     level: int = 0
@@ -133,8 +145,7 @@ class SkillItem(BaseModel):
     visible: bool = True
 
 
-class ProfileItem(BaseModel):
-    id: str
+class ProfileItem(BaseItem):
     network: str = ""
     username: str = ""
     icon: str = ""
@@ -142,23 +153,20 @@ class ProfileItem(BaseModel):
     visible: bool = True
 
 
-class LanguageItem(BaseModel):
-    id: str
+class LanguageItem(BaseItem):
     name: str = ""
     description: str = ""
     level: int = 0
     visible: bool = True
 
 
-class InterestItem(BaseModel):
-    id: str
+class InterestItem(BaseItem):
     name: str = ""
     keywords: list[str] = []
     visible: bool = True
 
 
-class AwardItem(BaseModel):
-    id: str
+class AwardItem(BaseItem):
     title: str = ""
     awarder: str = ""
     date: str = ""
@@ -171,8 +179,7 @@ class AwardItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class CertificationItem(BaseModel):
-    id: str
+class CertificationItem(BaseItem):
     name: str = ""
     issuer: str = ""
     date: str = ""
@@ -186,8 +193,7 @@ class CertificationItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class PublicationItem(BaseModel):
-    id: str
+class PublicationItem(BaseItem):
     name: str = ""
     publisher: str = ""
     date: str = ""
@@ -201,8 +207,7 @@ class PublicationItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class VolunteerItem(BaseModel):
-    id: str
+class VolunteerItem(BaseItem):
     organization: str = ""
     position: str = ""
     location: str = ""
@@ -217,8 +222,7 @@ class VolunteerItem(BaseModel):
         return coerce_date_to_string(v)
 
 
-class ReferenceItem(BaseModel):
-    id: str
+class ReferenceItem(BaseItem):
     name: str = ""
     position: str = ""
     phone: str = ""
@@ -298,8 +302,7 @@ class Sections(BaseModel):
     )
 
 
-class CustomSection(SectionBase):
-    id: str
+class CustomSection(SectionBase, BaseItem):
     items: list[dict] = []
 
 
