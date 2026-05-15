@@ -47,5 +47,6 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Liniting
+# Liniting & Type safety
 .ruff_cache/
+.mypy_cache

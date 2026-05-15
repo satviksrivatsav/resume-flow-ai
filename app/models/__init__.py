@@ -1,18 +1,18 @@
 # Models package
 from app.models.resume import (
-    Education,
-    PersonalInfo,
-    Project,
+    Basics,
+    EducationItem,
+    ExperienceItem,
+    ProjectItem,
     ResumeData,
-    Skill,
-    WorkExperience,
+    SkillItem,
 )
 
 __all__ = [
-    "PersonalInfo",
-    "Education",
-    "WorkExperience",
-    "Project",
-    "Skill",
+    "Basics",
+    "EducationItem",
+    "ExperienceItem",
+    "ProjectItem",
+    "SkillItem",
     "ResumeData",
 ]

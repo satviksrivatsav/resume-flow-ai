@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resume-flow-ai-deployment
+  labels:
+    app: resume-flow-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resume-flow-ai
+  template:
+    metadata:
+      labels:
+        app: resume-flow-ai
+    spec:
+      containers:
+      - name: resume-flow-ai
+        image: resume-flow-ai:latest
+        imagePullPolicy: Never
+        env:
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: resume-flow-ai-secrets
+              key: hf-token
+        - name: HF_TOKEN_ALT
+          valueFrom:
+            secretKeyRef:
+              name: resume-flow-ai-secrets
+              key: hf-token-alt
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: resume-flow-ai-secrets
+              key: gemini-api-key
+        ports:
+        - containerPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resume-flow-ai-service
+spec:
+  selector:
+    app: resume-flow-ai
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+  type: LoadBalancer

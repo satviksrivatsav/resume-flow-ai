@@ -1,80 +1,341 @@
-from pydantic import BaseModel
+from typing import Any
+
+from pydantic import BaseModel, Field, field_validator
 
 
-class PersonalInfo(BaseModel):
-    """Personal information section of a resume."""
+def coerce_date_to_string(v: Any) -> str:
+    """Coerce various date formats (strings, dicts) into a single string."""
+    if isinstance(v, dict):
+        # Handle cases like {'active': '...', 'expiration': '...'} or {'start': '...', 'end': '...'}
+        parts = []
+        for key, value in v.items():
+            if value:
+                parts.append(f"{key.capitalize()}: {value}")
+        return " | ".join(parts)
+    if v is None:
+        return ""
+    return str(v)
 
+
+class Website(BaseModel):
+    label: str = ""
+    href: str = ""
+
+
+class CustomField(BaseModel):
+    id: str
+    icon: str = ""
+    text: str = ""
+    link: str = ""
+
+
+class Picture(BaseModel):
+    url: str = ""
+    size: int = 64
+    aspectRatio: int = 1
+    borderRadius: int = 0
+    borderColor: str = "#000000"
+    borderWidth: int = 0
+    shadowColor: str = "#000000"
+    shadowWidth: int = 0
+
+
+class Basics(BaseModel):
     name: str = ""
+    headline: str = ""
     email: str = ""
     phone: str = ""
     location: str = ""
-    linkedin: str | None = ""
-    website: str | None = ""
-    github: str | None = ""
-    summary: str = ""
+    url: Website = Field(default_factory=Website)
+    customFields: list[CustomField] = []
 
 
-class Education(BaseModel):
-    """Education entry in a resume."""
+class Summary(BaseModel):
+    visible: bool = True
+    content: str = ""
 
+
+class SectionBase(BaseModel):
+    name: str
+    visible: bool = True
+    columns: int = 1
+    separate: bool = False
+
+
+class EducationItem(BaseModel):
     id: str
     school: str = ""
     degree: str = ""
-    field: str = ""
-    startDate: str = ""
-    endDate: str = ""
-    grade: str | None = ""
+    area: str = ""
+    grade: str = ""
+    location: str = ""
+    period: str = ""
+    website: Website = Field(default_factory=Website)
+    description: str = ""
+    visible: bool = True
+
+    @field_validator("period", mode="before")
+    @classmethod
+    def validate_period(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
+
+
+class ExperienceRole(BaseModel):
+    id: str
+    position: str = ""
+    period: str = ""
     description: str = ""
 
+    @field_validator("period", mode="before")
+    @classmethod
+    def validate_period(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
 
-class WorkExperience(BaseModel):
-    """Work experience entry in a resume."""
 
+class ExperienceItem(BaseModel):
     id: str
     company: str = ""
     position: str = ""
     location: str = ""
-    startDate: str = ""
-    endDate: str = ""
-    current: bool = False
+    period: str = ""
+    website: Website = Field(default_factory=Website)
     description: str = ""
+    roles: list[ExperienceRole] = []
+    visible: bool = True
+
+    @field_validator("period", mode="before")
+    @classmethod
+    def validate_period(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
 
 
-class Project(BaseModel):
-    """Project entry in a resume."""
-
+class ProjectItem(BaseModel):
     id: str
     name: str = ""
-    technologies: list[str] = []
-    startDate: str = ""
-    endDate: str = ""
-    ongoing: bool = False
     description: str = ""
-    link: str | None = ""
+    period: str = ""
+    website: Website = Field(default_factory=Website)
+    keywords: list[str] = []
+    visible: bool = True
+
+    @field_validator("period", mode="before")
+    @classmethod
+    def validate_period(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
 
 
-class Skill(BaseModel):
-    """Skill category in a resume."""
-
+class SkillItem(BaseModel):
     id: str
-    category: str = ""
-    items: str = ""
+    name: str = ""
+    description: str = ""
+    level: int = 0
+    keywords: list[str] = []
+    visible: bool = True
 
 
-class Custom(BaseModel):
-    """Any section in the parsed resume goes to custom section"""
+class ProfileItem(BaseModel):
+    id: str
+    network: str = ""
+    username: str = ""
+    icon: str = ""
+    website: Website = Field(default_factory=Website)
+    visible: bool = True
 
+
+class LanguageItem(BaseModel):
+    id: str
+    name: str = ""
+    description: str = ""
+    level: int = 0
+    visible: bool = True
+
+
+class InterestItem(BaseModel):
+    id: str
+    name: str = ""
+    keywords: list[str] = []
+    visible: bool = True
+
+
+class AwardItem(BaseModel):
     id: str
     title: str = ""
+    awarder: str = ""
+    date: str = ""
     description: str = ""
+    visible: bool = True
+
+    @field_validator("date", mode="before")
+    @classmethod
+    def validate_date(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
+
+
+class CertificationItem(BaseModel):
+    id: str
+    name: str = ""
+    issuer: str = ""
+    date: str = ""
+    description: str = ""
+    website: Website = Field(default_factory=Website)
+    visible: bool = True
+
+    @field_validator("date", mode="before")
+    @classmethod
+    def validate_date(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
+
+
+class PublicationItem(BaseModel):
+    id: str
+    name: str = ""
+    publisher: str = ""
+    date: str = ""
+    description: str = ""
+    website: Website = Field(default_factory=Website)
+    visible: bool = True
+
+    @field_validator("date", mode="before")
+    @classmethod
+    def validate_date(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
+
+
+class VolunteerItem(BaseModel):
+    id: str
+    organization: str = ""
+    position: str = ""
+    location: str = ""
+    period: str = ""
+    website: Website = Field(default_factory=Website)
+    description: str = ""
+    visible: bool = True
+
+    @field_validator("period", mode="before")
+    @classmethod
+    def validate_period(cls, v: Any) -> str:
+        return coerce_date_to_string(v)
+
+
+class ReferenceItem(BaseModel):
+    id: str
+    name: str = ""
+    position: str = ""
+    phone: str = ""
+    email: str = ""
+    description: str = ""
+    visible: bool = True
+
+
+class SectionProfiles(SectionBase):
+    items: list[ProfileItem] = []
+
+
+class SectionExperience(SectionBase):
+    items: list[ExperienceItem] = []
+
+
+class SectionEducation(SectionBase):
+    items: list[EducationItem] = []
+
+
+class SectionProjects(SectionBase):
+    items: list[ProjectItem] = []
+
+
+class SectionSkills(SectionBase):
+    items: list[SkillItem] = []
+
+
+class SectionLanguages(SectionBase):
+    items: list[LanguageItem] = []
+
+
+class SectionInterests(SectionBase):
+    items: list[InterestItem] = []
+
+
+class SectionAwards(SectionBase):
+    items: list[AwardItem] = []
+
+
+class SectionCertifications(SectionBase):
+    items: list[CertificationItem] = []
+
+
+class SectionPublications(SectionBase):
+    items: list[PublicationItem] = []
+
+
+class SectionVolunteer(SectionBase):
+    items: list[VolunteerItem] = []
+
+
+class SectionReferences(SectionBase):
+    items: list[ReferenceItem] = []
+
+
+class Sections(BaseModel):
+    profiles: SectionProfiles = Field(default_factory=lambda: SectionProfiles(name="Profiles"))
+    experience: SectionExperience = Field(
+        default_factory=lambda: SectionExperience(name="Experience")
+    )
+    education: SectionEducation = Field(default_factory=lambda: SectionEducation(name="Education"))
+    projects: SectionProjects = Field(default_factory=lambda: SectionProjects(name="Projects"))
+    skills: SectionSkills = Field(default_factory=lambda: SectionSkills(name="Skills"))
+    languages: SectionLanguages = Field(default_factory=lambda: SectionLanguages(name="Languages"))
+    interests: SectionInterests = Field(default_factory=lambda: SectionInterests(name="Interests"))
+    awards: SectionAwards = Field(default_factory=lambda: SectionAwards(name="Awards"))
+    certifications: SectionCertifications = Field(
+        default_factory=lambda: SectionCertifications(name="Certifications")
+    )
+    publications: SectionPublications = Field(
+        default_factory=lambda: SectionPublications(name="Publications")
+    )
+    volunteer: SectionVolunteer = Field(default_factory=lambda: SectionVolunteer(name="Volunteer"))
+    references: SectionReferences = Field(
+        default_factory=lambda: SectionReferences(name="References")
+    )
+
+
+class CustomSection(SectionBase):
+    id: str
+    items: list[dict] = []
+
+
+class ResumeMetadataLayoutPage(BaseModel):
+    main: list[str] = ["summary", "experience", "education", "projects"]
+    sidebar: list[str] = ["skills", "profiles"]
+
+
+class ResumeMetadataLayout(BaseModel):
+    pages: list[ResumeMetadataLayoutPage] = Field(
+        default_factory=lambda: [ResumeMetadataLayoutPage()]
+    )
+
+
+class ResumeMetadataTypography(BaseModel):
+    fontFamily: str = "Open Sans"
+    fontSize: int = 11
+
+
+class ResumeMetadataTheme(BaseModel):
+    primary: str = "#1f2937"
+
+
+class ResumeMetadata(BaseModel):
+    template: str = "onyx"
+    layout: ResumeMetadataLayout = Field(default_factory=ResumeMetadataLayout)
+    typography: ResumeMetadataTypography = Field(default_factory=ResumeMetadataTypography)
+    theme: ResumeMetadataTheme = Field(default_factory=ResumeMetadataTheme)
 
 
 class ResumeData(BaseModel):
     """Complete resume data structure matching frontend types."""
 
-    personalInfo: PersonalInfo
-    education: list[Education] = []
-    workExperience: list[WorkExperience] = []
-    projects: list[Project] = []
-    skills: list[Skill] = []
-    customSections: list[Custom] = []
+    picture: Picture = Field(default_factory=Picture)
+    basics: Basics = Field(default_factory=Basics)
+    summary: Summary = Field(default_factory=Summary)
+    sections: Sections = Field(default_factory=Sections)
+    customSections: list[CustomSection] = []
+    metadata: ResumeMetadata = Field(default_factory=ResumeMetadata)

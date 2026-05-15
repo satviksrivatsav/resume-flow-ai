@@ -1,13 +1,21 @@
+import logfire
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import resume
+
+# Configure Logfire (send to cloud only if token is present)
+logfire.configure(send_to_logfire='if-token')
+logfire.instrument_pydantic()
 
 app = FastAPI(
     title="Resume Parser API",
     description="API for parsing PDF resumes and extracting structured data",
     version="1.0.0",
 )
+
+# Instrument FastAPI
+logfire.instrument_fastapi(app)
 
 # Configure CORS
 app.add_middleware(
