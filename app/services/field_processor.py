@@ -22,7 +22,8 @@ def process_field_request(
     # Prepare template blocks
     instructions_block = f"Instructions: {instruction}" if instruction else ""
     tone_block = f"Tone: {tone}" if tone else ""
-    format_block = "Format as bullet points (start each with •)." if format == "bullets" else "Format as a paragraph."
+    format_block = "Format as a bulleted list using <ul> and <li> tags." if format == "bullets" else "Format as a paragraph."
+
 
     if action == "REWRITE":
         user_prompt_template = load_prompt("field_processor/rewrite.md")

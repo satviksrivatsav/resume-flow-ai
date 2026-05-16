@@ -88,7 +88,8 @@ RULES:
 - Generate unique UUIDs for each id field
 - Use "YYYY - YYYY" or "Month YYYY - Present" format for period and date fields. ALWAYS return a single string for dates, NEVER a dictionary.
 - If a section is not found, return the section object with an empty "items" array []
-- Preserve bullet points in descriptions using \n
+- For `description` and `summary.content` fields, convert bullet points into semantic HTML using `<ul>` and `<li>` tags. You may also use `<b>` for emphasis if it appears to be a key keyword or title in the original text.
+
 - Extract ALL work experience, education, projects, awards, and certifications found
 - Group skills by logical categories (e.g., Programming, Tools)
 - AMBIGUITY RULE: If an entry is ambiguous, place it in a logical section. 
