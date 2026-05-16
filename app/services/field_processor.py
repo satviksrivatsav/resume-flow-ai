@@ -1,5 +1,7 @@
 import logfire
+from typing import Any
 from huggingface_hub import InferenceClient
+
 
 from app.core.config import settings
 
@@ -13,8 +15,10 @@ def process_field_request(
     instruction: str = "",
     tone: str = "professional",
     format: str = "paragraph",
+    fullResumeData: dict[str, Any] | None = None,
 ) -> str:
     from app.utils.prompt_loader import load_prompt
+    import json
 
     with logfire.span("process_field_request", action=action, field_name=fieldName):
         system_prompt = load_prompt("field_processor/system.md")
@@ -23,6 +27,19 @@ def process_field_request(
     instructions_block = f"Instructions: {instruction}" if instruction else ""
     tone_block = f"Tone: {tone}" if tone else ""
     format_block = "Format as a bulleted list using <ul> and <li> tags." if format == "bullets" else "Format as a paragraph."
+    
+    resume_context_block = ""
+    if fullResumeData:
+        # Create a simplified context from the resume data to avoid context window issues
+        # and focus on the most relevant parts (experience, projects, skills)
+        context_data = {
+            "personalInfo": fullResumeData.get("personalInfo", {}),
+            "experience": fullResumeData.get("sections", {}).get("experience", {}).get("items", []),
+            "skills": fullResumeData.get("sections", {}).get("skills", {}).get("items", []),
+            "projects": fullResumeData.get("sections", {}).get("projects", {}).get("items", []),
+            "education": fullResumeData.get("sections", {}).get("education", {}).get("items", []),
+        }
+        resume_context_block = f"\n\nContext from entire resume:\n{json.dumps(context_data, indent=2)}"
 
 
     if action == "REWRITE":
@@ -32,7 +49,8 @@ def process_field_request(
             instructions_block=instructions_block,
             tone_block=tone_block,
             format_block=format_block,
-            originalText=originalText
+            originalText=originalText,
+            resume_context_block=resume_context_block
         )
     else:
         user_prompt_template = load_prompt("field_processor/generate.md")
@@ -40,8 +58,10 @@ def process_field_request(
             fieldName=fieldName,
             instructions_block=instructions_block,
             tone_block=tone_block,
-            format_block=format_block
+            format_block=format_block,
+            resume_context_block=resume_context_block
         )
+
 
 
     # Call the HuggingFace Inference API

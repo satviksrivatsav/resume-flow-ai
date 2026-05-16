@@ -12,6 +12,8 @@ class Field(BaseModel):
     instruction: str | None = ""
     tone: Literal["professional", "casual", "confident", "friendly"] = "professional"
     format: Literal["bullets", "paragraph"] = "paragraph"
+    fullResumeData: dict[str, Any] | None = None
+
 
     @field_validator("tone", "format", mode="before")
     @classmethod
