@@ -73,6 +73,21 @@ class ContentExtractor:
         """Convert image bytes to base64."""
         return base64.b64encode(image_bytes).decode("utf-8")
 
+    @staticmethod
+    async def extract_text(file_bytes: bytes, filename: str) -> str:
+        """Extract text from various file types."""
+        filename_lower = filename.lower()
+        if filename_lower.endswith(".pdf"):
+            return await ContentExtractor.extract_text_from_pdf(file_bytes)
+        elif filename_lower.endswith(".docx"):
+            return await ContentExtractor.extract_text_from_docx(file_bytes)
+        elif filename_lower.endswith(".txt"):
+            try:
+                return file_bytes.decode("utf-8")
+            except UnicodeDecodeError:
+                return file_bytes.decode("latin-1")
+        return ""
+
     @classmethod
     def validate_content_quality(cls, text: str) -> bool:
         """Check if the extracted text is sufficient and looks like a resume."""

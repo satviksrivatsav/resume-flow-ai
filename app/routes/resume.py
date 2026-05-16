@@ -182,3 +182,20 @@ async def ats_json_endpoint(request: AtsJsonRequest) -> dict[str, Any]:
     except Exception as e:
         logfire.error(f"Internal error during JSON ATS processing: {e}")
         raise HTTPException(status_code=500, detail="Internal server error during ATS processing") from e
+
+
+@router.post("/extract-text")
+async def extract_text_endpoint(file: Annotated[UploadFile, File(...)]) -> dict[str, Any]:
+    """
+    Extract raw text from a file (PDF, DOCX, TXT).
+    """
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No filename provided")
+
+    try:
+        file_bytes = await file.read()
+        text = await ContentExtractor.extract_text(file_bytes, file.filename)
+        return {"success": True, "data": text}
+    except Exception as e:
+        logfire.error(f"Error extracting text from {file.filename}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to extract text from file") from e

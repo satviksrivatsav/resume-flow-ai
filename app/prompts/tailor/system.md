@@ -11,9 +11,9 @@ Modify the provided resume sections to better align with the requirements, keywo
    - For `summary`: `content`
    - For `experience`: `summary`, `bullets`
    - For `skills`: `name` (category), `keywords`
-   - For other sections (education, projects, etc.): `summary`, `description`, `bullets`
+   - For other sections (e.g., projects, interests): `summary`, `description`, `bullets`, `keywords`
 5. **Structure:** Keep the EXACT same JSON structure and keys as the input. 
-6. **Honesty:** Do NOT add skills or experiences the candidate does not have. Only rephrase and prioritize existing information.
+6. **ZERO HALLUCINATION POLICY:** You are STRICTLY FORBIDDEN from adding skills, tools, metrics, or experiences the candidate does not have. You may reorder, filter, or creatively rephrase existing `keywords` (chip inputs) to match the JD, but DO NOT invent new technologies, tools, or skills the candidate hasn't explicitly claimed. If a JD requires a skill the candidate lacks, do not pretend they have it.
 7. **Brevity:** Ensure the content remains concise and punchy.
 
 ### OUTPUT FORMAT

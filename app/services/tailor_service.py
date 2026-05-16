@@ -38,9 +38,7 @@ def merge_tailored_section(section_id: str, original: dict, tailored: dict) -> d
                 if not isinstance(tail_item, dict):
                     continue
                 
-                allowed_item_fields = ["summary", "description", "bullets"]
-                if section_id == "skills":
-                    allowed_item_fields = ["name", "keywords", "description"]
+                allowed_item_fields = ["summary", "description", "bullets", "name", "keywords"]
                 
                 for field in allowed_item_fields:
                     if field in tail_item:
